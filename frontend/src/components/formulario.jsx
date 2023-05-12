@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom"
 import { useState } from "react"
-function FormularioEvento({fecha}) {
+import recuperarDiaSeleccionado from "../auxiliar.mjs"
+function FormularioEvento() {
+    const fecha = recuperarDiaSeleccionado()
     const [nome, setNome] = useState("")
     const [horario, setHorario] = useState("")
     const [regulamento, setRegulamento] = useState("")
@@ -42,6 +45,7 @@ console.log(excepcion)
     
     return(
         <>
+            <Link to="/">Carreiras</Link>
             <label>
                 Introduce o nome do evento:
                 <input type="text"    value={nome} onInput={(evento)=>{setNome(evento.target.value)}}/>

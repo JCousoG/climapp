@@ -1,16 +1,21 @@
-import { useState, useEffect, useContext } from "react"
-import { contextoVistas } from "./servicioVistas"
+import { useState, useEffect} from "react";
+import { Link } from "react-router-dom";
+import recuperarDiaSeleccionado from "../auxiliar.mjs";
 
-function MostrarCarreiras({fecha}) {
-  const { cambiarVista } = useContext(contextoVistas)
+function MostrarCarreiras({dia}) {
+  // useEffect(
+  //   obterCarreiras,
+  //   [fecha])
+
+
 
 const [listaCarreiras, setListaCarreiras] = useState([])
 useEffect(
     obterCarreiras,
-    [fecha])
+    [dia])
     function obterCarreiras() {
     
-        fetch("http://localhost:8000/carreiras/?data="+fecha.toISOString())
+        fetch("http://localhost:8000/carreiras/?data="+dia.toISOString())
     .then(reaccionParaResposta)
     .catch(reaccionErroResposta)
     function reaccionParaResposta(resposta){
@@ -27,15 +32,13 @@ useEffect(
   
     }
 
-    function formulario() {
-     
-      cambiarVista("formulario")
-    }
+  
     return(
         <>
-        <button onClick={formulario}>Pulsa aquí para engadir unha carreira</button>
+        <Link to="/formulario/">Engade unha carreira</Link>
+        
         <ul>
-            {listaCarreiras.map( carreira => <li>{carreira.nome}</li>)}
+            {listaCarreiras.map( carreira => <li><Link to={"/carreira/"+carreira.id} target="_blank">{carreira.nome}</Link></li>)}
         </ul>
         </>
 

@@ -63,15 +63,15 @@ app.post("/carreiras/", async(request, response)=> {
   }
 })
 app.get("/carreiras/", async (request, response)=>{
-  // if (request.query.data) {      
+  if (request.query.data) {      
 
       try {
           const data = new Date(request.query.data)
           console.log(request.query.data, data);
           const listaCarreiras = await Carreira.findAll(
-            request.query.data ? {
+              {
               where: {data: data}
-            } : {}
+            }
           )
           response.setHeader("Content-Type", "application/json")
           response.status(200)
@@ -81,7 +81,26 @@ app.get("/carreiras/", async (request, response)=>{
         response.status(500)
         response.send('Error.')
       }
-  // }
+  }
+
+  else if (request.query.id) {      
+
+    try {
+        const id = parseInt(request.query.id)
+        const datosCarreira = await Carreira.findByPk(id        )
+        response.setHeader("Content-Type", "application/json")
+        response.status(200)
+        response.send(JSON.stringify(datosCarreira))
+    } catch (error) {
+      console.error(error)
+      response.status(500)
+      response.send('Error.')
+    }
+} else (error) => {
+  console.error(error)
+  response.status(404)
+  response.send('Error')
+}
 })
 
 app.listen( 8000, ()=> {
