@@ -1,6 +1,8 @@
 import express, { response } from "express"
 import cors from "cors"
 import { Sequelize, DataTypes, where }  from 'sequelize';
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken";
 
 const app = express()
 app.use(cors())
@@ -46,11 +48,58 @@ const Carreira = sequelize.define('Carreira', {
     type: DataTypes.DATE
   }
 });
+
+const Usuario = sequelize.define('Usuario', {
+  nome: {
+    type: DataTypes.STRING,
+    unique: true
+  },
+  contrasinal: {
+    type: DataTypes.STRING
+  }
+});
+Usuario.hasMany(Carreira);
+Carreira.belongsTo(Usuario);
 await sequelize.sync()
 
-app.post("/carreiras/", async(request, response)=> {
+app.post("/usuarios/", async (request, response) => {
   try {
-    const datosEvento = {...request.body}
+    const hash = bcrypt.hashSync(request.body.contrasinal, 10)
+    const novosDatos = {...request.body, contrasinal: hash}
+    const modeloUsuario = await Usuario.create(novosDatos)
+
+    response.setHeader("Content-Type", "application/json")
+    response.status(200).json(modeloUsuario)
+  }
+
+  catch (error) {
+    console.error(error)
+    response.status(500)
+    response.send('Error')
+  }
+})
+app.post("/login/", async (request, response) => {
+  try {
+    const usuario = await Usuario.findOne({
+      where: {nome: request.body.nome}
+    })
+    const autenticado = bcrypt.compareSync(request.body.contrasinal, usuario?.contrasinal ?? "")
+    if (autenticado) {
+      const paseAutorizacion = jwt.sign({ id: usuario.id}, process.env.JWT_SECRET)
+      return response.send(paseAutorizacion)
+    }
+    return response.sendStatus(401)
+  } catch (error) {
+    console.error(error)
+    response.status(500)
+    response.send('Error')
+
+  }
+})
+
+app.post("/carreiras/", middlewareauthorization,  async(request, response)=> {
+  try {
+    const datosEvento = {...request.body, UsuarioId: response.locals.authorization.id}
     const modeloCarreira = await Carreira.create(datosEvento)
 
     response.setHeader("Content-Type", "application/json")
@@ -61,6 +110,20 @@ app.post("/carreiras/", async(request, response)=> {
     response.status(500)
     response.send("Error")
   }
+})
+  app.put("/carreiras/", middlewareauthorization,  async(request, response)=> {
+    try {
+      const id = parseInt(request.query.id)
+      const carreira = await Carreira.findByPk(id)
+      await carreira.update(request.body)
+  
+      response.status(200).json(carreira)
+    }
+    catch (error) {
+      console.error(error)
+      response.status(500)
+      response.send("Error")
+    }
 })
 app.get("/carreiras/", async (request, response)=>{
   if (request.query.data) {      
@@ -102,6 +165,30 @@ app.get("/carreiras/", async (request, response)=>{
   response.send('Error')
 }
 })
+app.delete("/carreiras/", async (request, response)=> {
+  try {const id= parseInt(request.query.id)
+      const carreira= await Carreira.findByPk(id)
+      await carreira.destroy()
+      response.sendStatus(200)}
+  catch(error) {
+    console.error(error)
+    response.status(500)
+    response.send('Error')
+  }
+
+})
+
+function middlewareauthorization(request, response, next) {
+  try {
+    const [_, token] = request.headers.authorization.split(" ")
+    const datosAutorizacion = jwt.verify(token, process.env.JWT_SECRET)
+    response.locals.authorization = datosAutorizacion
+    return next()
+} catch (error) {
+    resposta.sendStatus(403)
+}
+}
+
 
 app.listen( 8000, ()=> {
   console.log("express traballando...");

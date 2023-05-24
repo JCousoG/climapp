@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from 'react-router-dom';
+import { Link } from "react-router-dom";
 function DatosCarreira() {
     const { id } = useParams()
     const [detallesCarreira, setDetallesCarreira] = useState({})
@@ -29,7 +30,9 @@ function DatosCarreira() {
     }
     return(
         <>
+
         <h2>Datos da carreira</h2>
+        <br></br><Link to={"/modificar/"+detallesCarreira.id}>Modifica los datos de la carrera</Link>
         <ul>
             <li>{fechaCarreira()}</li>
             <li>{detallesCarreira.nome}</li>

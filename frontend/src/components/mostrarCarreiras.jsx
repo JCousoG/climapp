@@ -1,6 +1,8 @@
 import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
-import recuperarDiaSeleccionado from "../auxiliar.mjs";
+import EliminarCarreira from "./eliminarCarreira";
+import Vista from "./vista";
+//import recuperarDiaSeleccionado from "../auxiliar.mjs";
 
 function MostrarCarreiras({dia}) {
   // useEffect(
@@ -31,18 +33,19 @@ useEffect(
       }
   
     }
+ 
 
   
     return(
         <>
-        <Link to="/formulario/">Engade unha carreira</Link>
+        <Vista/>
+        <br></br><Link to={"/formulario/"}>Dar de alta una carrera</Link>
         
         <ul>
-            {listaCarreiras.map( carreira => <li><Link to={"/carreira/"+carreira.id} target="_blank">{carreira.nome}</Link></li>)}
+            {listaCarreiras.map( carreira => <li><Link to={"/carreira/"+carreira.id} target="_blank">{carreira.nome}</Link><EliminarCarreira id={carreira.id} obterCarreiras={obterCarreiras}/></li>)}
         </ul>
         </>
 
     )
 }
 export default MostrarCarreiras
-//target="_blank" para abrir nunha pestaña nova

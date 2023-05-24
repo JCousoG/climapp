@@ -1,20 +1,19 @@
 import { Link } from "react-router-dom"
-import { useNavigate } from "react-router-dom";
 import { useState } from "react"
+import { useParams } from 'react-router-dom';
 import recuperarDiaSeleccionado from "../auxiliar.mjs"
-function FormularioEvento({ruta}) {
+function ModificarCarreira() {
+    const { id } = useParams()
     const fecha = recuperarDiaSeleccionado()
     const [nome, setNome] = useState("")
     const [horario, setHorario] = useState("")
     const [regulamento, setRegulamento] = useState("")
     const [circuito, setCircuito] = useState()
     const [ubicacion, setUbicacion] = useState()
-    const [ficheiro, setFicheiro] = useState()
 
-    const navigate = useNavigate()
+   
 
     function manexadorCircuito(evento) {
-        setFicheiro(evento.target.value)
        const reader = new FileReader()
        reader.readAsText(evento.target.files[0])
        reader.addEventListener("load",()=>setCircuito(reader.result))
@@ -28,9 +27,9 @@ function FormularioEvento({ruta}) {
         try {
             const carreiraJSON = JSON.stringify(carreira)
             const response = await fetch(
-                "http://localhost:8000/carreiras",
+                "http://localhost:8000/carreiras/?id="+id,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/JSON",
                         authorization: "Bearer "+localStorage.getItem("token")
@@ -40,7 +39,6 @@ function FormularioEvento({ruta}) {
             if (response.ok) {
                 setNome("")
                 setCircuito()
-                setFicheiro("")
                 setHorario("")
                 setRegulamento("")
                 setUbicacion("")}
@@ -57,9 +55,6 @@ console.log(excepcion)
     function cerrarSesion() {
         localStorage.removeItem("token")
         const token = localStorage.getItem("token")
-    if(!token) { 
-        navigate(ruta)
-     }
     }
     
     
@@ -81,7 +76,7 @@ console.log(excepcion)
             </label>
             <label>
                 Introduce o circuito da proba
-                <input type="file" value={ficheiro} onInput={manexadorCircuito}/>
+                <input type="file" onInput={manexadorCircuito}/>
             </label>
             <label>
                 Introduce aquí o regulamento
@@ -92,4 +87,4 @@ console.log(excepcion)
         </>
     )
 }
-export default FormularioEvento
+export default ModificarCarreira
