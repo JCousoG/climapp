@@ -64,9 +64,14 @@ console.log(excepcion)
     
     
     return(
-        <>
-            <Link to="/">Carreiras</Link>
-            <br></br>
+        <>  <h2>Formulario de alta de carreiras</h2>
+        <nav>
+        <ul>
+            <li><Link to="/">Ver carreiras</Link></li>
+            <li><Link to="./components/Login">Inicia Sesión</Link></li>
+            <li><Link to="./components/crearUsuario">Date de alta</Link></li>
+        </ul>
+        </nav>
             <label>
                 Introduce o nome do evento:
                 <input type="text"    value={nome} onInput={(evento)=>{setNome(evento.target.value)}}/>

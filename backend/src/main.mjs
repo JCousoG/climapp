@@ -177,6 +177,21 @@ app.delete("/carreiras/", async (request, response)=> {
   }
 
 })
+app.get("/meteo/", async (request, response)=> {
+  try { const id = parseInt(request.query.id)
+  const { ubicacion } = await Carreira.findByPk(id, {attributes: ['ubicacion']}) 
+  const [ lat, lon ] = ubicacion.split(",") 
+   
+fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.API}&units=metric&lang=gl`)
+  .then(response => response.json())
+  .then(data => response.send(data.list));
+  
+} catch (error) {
+  console.error(error)
+  response.status(500)
+  response.send('Error.')
+}
+})
 
 function middlewareauthorization(request, response, next) {
   try {

@@ -2,22 +2,28 @@ import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import EliminarCarreira from "./eliminarCarreira";
 import Vista from "./vista";
+import recuperarDiaSeleccionado from '../auxiliar.mjs';
+import Calendar from 'react-calendar';
 //import recuperarDiaSeleccionado from "../auxiliar.mjs";
 
-function MostrarCarreiras({dia}) {
+function MostrarCarreiras() {
   // useEffect(
   //   obterCarreiras,
   //   [fecha])
 
+  const [value, onChange] = useState(recuperarDiaSeleccionado());
 
+  function gardarDia (diaSeleccionado) {
+    localStorage.setItem("diaSeleccionado", JSON.stringify(diaSeleccionado))
+  }
 
 const [listaCarreiras, setListaCarreiras] = useState([])
 useEffect(
     obterCarreiras,
-    [dia])
+    [value])
     function obterCarreiras() {
     
-        fetch("http://localhost:8000/carreiras/?data="+dia.toISOString())
+        fetch("http://localhost:8000/carreiras/?data="+value.toISOString())
     .then(reaccionParaResposta)
     .catch(reaccionErroResposta)
     function reaccionParaResposta(resposta){
@@ -38,6 +44,7 @@ useEffect(
   
     return(
         <>
+         <Calendar onChange={onChange} value={value} onClickDay={gardarDia}/>
         <Vista/>
         <br></br><Link to={"/formulario/"}>Dar de alta una carrera</Link>
         

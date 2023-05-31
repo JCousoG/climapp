@@ -1,5 +1,7 @@
+@import url(https://fonts.googleapis.com/css?family=Righteous);
 .App {
   text-align: center;
+  
 }
 
 input {
@@ -22,4 +24,73 @@ input[type="text"] {
 
 input[type="text"]:focus {
   border: 1px solid blue;
+}
+
+.datosClima>ul {
+  display: flex;
+  width: 15%;
+  list-style: none;
+}
+h1 {
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  font-family: 'Righteous', serif;
+  font-size: 3em; 
+  text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  
+  }
+  
+h2 {
+  color: rgb(255, 255, 255);
+  font-family: 'Righteous', serif;
+  font-size: 2em; 
+  text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  text-align: center;
+}
+h3 {
+  color: rgb(255, 255, 255);
+  font-size: small;
+ 
+  text-align: center;
+  
+}
+h4 {
+  color:grey rgb(255, 255, 255);
+  font-family: 'Righteous', serif;
+  font-size: 1em; 
+  text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  text-align: center;
+  border: white 8px ridge;
+  border-radius: 20%;
+}
+img {
+  size: 2em;
+}
+#datosCarreira {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: auto 1fr auto;
+  background: linear-gradient(skyblue, black
+  );
+
+}
+#titulo {
+  text-align: center;
+  grid-column: 1/3;
+  grid-row: 1/2;
+}
+#calendario {
+  grid-column: 1/2;
+    grid-row: 2/3;
+}
+#meteo {
+  grid-column: 2/3;
+  grid-row: 2/3;
+}
+#resto {
+  grid-column: 1/3;
+  grid-row: 3/4;
+}
+p {
+  color: blanchedalmond;
 }
